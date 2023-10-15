@@ -72,7 +72,7 @@ export default class Tetris extends Game {
       }
       this.currentPiece.y = 0;
       this.currentPiece = this.nextPiece;
-      this.nextPiece = gameData.piecesTemplates[1];
+      this.nextPiece = getRandomElement(gameData.piecesTemplates);
 
       this.clearCompleteRows();
     }
@@ -111,7 +111,7 @@ export default class Tetris extends Game {
           y * gameData.settings.squareSize,
           gameData.settings.squareSize - gameData.settings.lineThickness,
           gameData.settings.squareSize - gameData.settings.lineThickness,
-          "green"
+          "yellow"
         );
       }
     }
