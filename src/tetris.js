@@ -47,6 +47,10 @@ export default class Tetris extends Game {
       this.currentPiece.x++;
   }
 
+  checkGameOver() {
+    return this.board[0].some((x) => x !== 0);
+  }
+
   clearCompleteRows() {
     for (let y = 0; y < this.board.length; y++) {
       if (this.board[y].every((x) => x !== 0)) {
@@ -71,10 +75,15 @@ export default class Tetris extends Game {
         }
       }
       this.currentPiece.y = 0;
+      this.currentPiece.x = Math.trunc(this.squareCountX / 2);
       this.currentPiece = this.nextPiece;
       this.nextPiece = getRandomElement(gameData.piecesTemplates);
 
       this.clearCompleteRows();
+
+      if (this.checkGameOver()) {
+        gameData.gameOver = true;
+      }
     }
   }
 
@@ -132,9 +141,16 @@ export default class Tetris extends Game {
     }
   }
 
+  renderGameOver() {
+    this.canvasRenderer.setBackgroundColor("red");
+  }
+
   render() {
     this.canvasRenderer.clear();
-    if (gameData.gameOver) return;
+    if (gameData.gameOver) {
+      this.renderGameOver();
+      return;
+    }
 
     this.renderGrid();
     this.renderBoard();
