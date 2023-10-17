@@ -3,10 +3,15 @@ import { checkCollisions, generateMatrix, getRandomElement, getTruncedVector } f
 
 export default class Tetris extends Game {
   constructor() {
-    super(3, 12);
+    super(gameData.settings.tickRate, gameData.settings.frameRate);
 
-    this.root = document.getElementById("root");
-    this.canvasRenderer = new CanvasRenderer(400, 600, gameData.settings.backgroundColor, root);
+    this.root = document.getElementById(gameData.settings.rootId);
+    this.canvasRenderer = new CanvasRenderer(
+      gameData.settings.canvasWidth,
+      gameData.settings.canvasHeight,
+      gameData.settings.backgroundColor,
+      root
+    );
 
     this.squareCountX = this.canvasRenderer.getCanvasInfo().width / gameData.settings.squareSize;
     this.squareCountY = this.canvasRenderer.getCanvasInfo().height / gameData.settings.squareSize;
@@ -47,6 +52,10 @@ export default class Tetris extends Game {
       this.currentPiece.x++;
   }
 
+  checkGameOver() {
+    return this.board[0].some((x) => x !== 0);
+  }
+
   clearCompleteRows() {
     for (let y = 0; y < this.board.length; y++) {
       if (this.board[y].every((x) => x !== 0)) {
@@ -71,10 +80,15 @@ export default class Tetris extends Game {
         }
       }
       this.currentPiece.y = 0;
+      this.currentPiece.x = Math.trunc(this.squareCountX / 2);
       this.currentPiece = this.nextPiece;
       this.nextPiece = getRandomElement(gameData.piecesTemplates);
 
       this.clearCompleteRows();
+
+      if (this.checkGameOver()) {
+        gameData.gameOver = true;
+      }
     }
   }
 
@@ -111,7 +125,7 @@ export default class Tetris extends Game {
           y * gameData.settings.squareSize,
           gameData.settings.squareSize - gameData.settings.lineThickness,
           gameData.settings.squareSize - gameData.settings.lineThickness,
-          "yellow"
+          gameData.settings.solidColor
         );
       }
     }
@@ -132,9 +146,16 @@ export default class Tetris extends Game {
     }
   }
 
+  renderGameOver() {
+    this.canvasRenderer.setBackgroundColor("red");
+  }
+
   render() {
     this.canvasRenderer.clear();
-    if (gameData.gameOver) return;
+    if (gameData.gameOver) {
+      this.renderGameOver();
+      return;
+    }
 
     this.renderGrid();
     this.renderBoard();
