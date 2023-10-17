@@ -3,10 +3,15 @@ import { checkCollisions, generateMatrix, getRandomElement, getTruncedVector } f
 
 export default class Tetris extends Game {
   constructor() {
-    super(3, 12);
+    super(gameData.settings.tickRate, gameData.settings.frameRate);
 
-    this.root = document.getElementById("root");
-    this.canvasRenderer = new CanvasRenderer(400, 600, gameData.settings.backgroundColor, root);
+    this.root = document.getElementById(gameData.settings.rootId);
+    this.canvasRenderer = new CanvasRenderer(
+      gameData.settings.canvasWidth,
+      gameData.settings.canvasHeight,
+      gameData.settings.backgroundColor,
+      root
+    );
 
     this.squareCountX = this.canvasRenderer.getCanvasInfo().width / gameData.settings.squareSize;
     this.squareCountY = this.canvasRenderer.getCanvasInfo().height / gameData.settings.squareSize;
@@ -120,7 +125,7 @@ export default class Tetris extends Game {
           y * gameData.settings.squareSize,
           gameData.settings.squareSize - gameData.settings.lineThickness,
           gameData.settings.squareSize - gameData.settings.lineThickness,
-          "yellow"
+          gameData.settings.solidColor
         );
       }
     }

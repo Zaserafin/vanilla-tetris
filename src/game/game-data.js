@@ -2,11 +2,17 @@ const gameData = {
   playerScore: 0,
   gameOver: false,
   settings: {
+    rootId: "root",
     soundEnabled: true,
     squareSize: 40,
     backgroundColor: "#4f4f4f",
     lineColor: "#ffffff09",
     lineThickness: 2,
+    solidColor: "yellow",
+    tickRate: 4,
+    frameRate: 12,
+    canvasHeight: 600,
+    canvasWidth: 400,
   },
   piecesTemplates: [
     {
