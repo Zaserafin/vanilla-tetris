@@ -8,7 +8,7 @@ const gameData = {
     backgroundColor: "#4f4f4f",
     lineColor: "#ffffff09",
     lineThickness: 2,
-    solidColor: "yellow",
+    solidColor: "lightcoral",
     tickRate: 4,
     frameRate: 12,
     canvasHeight: 600,
@@ -19,14 +19,14 @@ const gameData = {
       id: "i",
       x: 4,
       y: 0,
-      color: "red",
+      color: "cyan",
       template: [[1, 1, 1, 1]],
     },
     {
       id: "j",
       x: 4,
       y: 0,
-      color: "white",
+      color: "blue",
       template: [
         [1, 1, 1],
         [0, 0, 1],
@@ -36,7 +36,7 @@ const gameData = {
       id: "l",
       x: 4,
       y: 0,
-      color: "magenta",
+      color: "orange",
       template: [
         [1, 1, 1],
         [1, 0, 0],
@@ -46,7 +46,7 @@ const gameData = {
       id: "o",
       x: 4,
       y: 0,
-      color: "blue",
+      color: "yellow",
       template: [
         [1, 1],
         [1, 1],
@@ -56,7 +56,7 @@ const gameData = {
       id: "s",
       x: 4,
       y: 0,
-      color: "green",
+      color: "lightgreen",
       template: [
         [0, 1, 1],
         [1, 1, 0],
@@ -66,7 +66,7 @@ const gameData = {
       id: "t",
       x: 4,
       y: 0,
-      color: "brown",
+      color: "violet",
       template: [
         [0, 1, 0],
         [1, 1, 1],
@@ -76,7 +76,7 @@ const gameData = {
       id: "z",
       x: 4,
       y: 0,
-      color: "cyan",
+      color: "coral",
       template: [
         [1, 1, 0],
         [0, 1, 1],

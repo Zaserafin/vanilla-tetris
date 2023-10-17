@@ -92,24 +92,15 @@ export default class Tetris extends Game {
     }
   }
 
-  renderGrid() {
+  renderBackground() {
     for (let x = 0; x < this.squareCountX; x++) {
+      const color = x % 2 === 0 ? gameData.settings.lineColor : gameData.settings.backgroundColor;
       this.canvasRenderer.drawRect(
         gameData.settings.squareSize * x - gameData.settings.lineThickness,
         0,
-        gameData.settings.lineThickness,
+        gameData.settings.squareSize,
         this.canvasRenderer.getCanvasInfo().height,
-        gameData.settings.lineColor
-      );
-    }
-
-    for (let y = 0; y < this.squareCountY; y++) {
-      this.canvasRenderer.drawRect(
-        0,
-        gameData.settings.squareSize * y - gameData.settings.lineThickness,
-        this.canvasRenderer.getCanvasInfo().width,
-        gameData.settings.lineThickness,
-        gameData.settings.lineColor
+        color
       );
     }
   }
@@ -157,7 +148,7 @@ export default class Tetris extends Game {
       return;
     }
 
-    this.renderGrid();
+    this.renderBackground();
     this.renderBoard();
     this.renderCurrentPiece();
   }
