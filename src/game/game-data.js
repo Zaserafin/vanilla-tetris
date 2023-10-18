@@ -1,8 +1,18 @@
 const gameData = {
   playerScore: 0,
+  tetrisCount: 0,
+  highScore: 0,
   gameOver: false,
+  scores: {
+    single: 100,
+    double: 200,
+    triple: 300,
+    tetris: 800,
+    doubleTetris: 1200,
+  },
   settings: {
-    rootId: "root",
+    mainCanvasId: "game-canvas",
+    pieceCanvasId: "piece-canvas",
     soundEnabled: true,
     squareSize: 40,
     backgroundColor: "#4f4f4f",

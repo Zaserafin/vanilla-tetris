@@ -6,24 +6,12 @@ export default class CanvasRenderer {
    * @param {string} [backgroundColor = 'white'] - Color de fondo del lienzo (opcional).
    * @param {HTMLElement} [parentElement] - Elemento HTML al que se agregará el lienzo (opcional).
    */
-  constructor(
-    width,
-    height,
-    backgroundColor = "white",
-    parentElement = document.body
-  ) {
-    this.canvas = document.createElement("canvas");
+  constructor(id, width, height, backgroundColor = "white") {
+    this.canvas = document.getElementById(id);
     this.canvas.width = width;
     this.canvas.height = height;
     this.context = this.canvas.getContext("2d");
-
     this.setBackgroundColor(backgroundColor);
-
-    if (parentElement instanceof HTMLElement) {
-      parentElement.appendChild(this.canvas);
-    } else {
-      document.body.appendChild(this.canvas);
-    }
   }
 
   /**
@@ -137,6 +125,16 @@ export default class CanvasRenderer {
       backgroundColor: this.canvas.style.backgroundColor,
       // Agregar más propiedades según sea necesario
     };
+  }
+
+  /**
+   * Cambia las dimensiones del lienzo.
+   * @param {number} width - Ancho del lienzo.
+   * @param {number} height - Alto del lienzo.
+   */
+  resize({ width = null, height = null }) {
+    if (width) this.canvas.width = width;
+    if (height) this.canvas.height = height;
   }
 
   /**
