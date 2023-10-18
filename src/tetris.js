@@ -5,21 +5,35 @@ export default class Tetris extends Game {
   constructor() {
     super(gameData.settings.tickRate, gameData.settings.frameRate);
 
-    this.root = document.getElementById(gameData.settings.rootId);
-    this.canvasRenderer = new CanvasRenderer(
+    this.gameRenderer = new CanvasRenderer(
+      gameData.settings.mainCanvasId,
       gameData.settings.canvasWidth,
       gameData.settings.canvasHeight,
       gameData.settings.backgroundColor,
       root
     );
 
-    this.squareCountX = this.canvasRenderer.getCanvasInfo().width / gameData.settings.squareSize;
-    this.squareCountY = this.canvasRenderer.getCanvasInfo().height / gameData.settings.squareSize;
+    this.pieceRenderer = new CanvasRenderer(
+      gameData.settings.pieceCanvasId,
+      0,
+      0,
+      "transparent",
+      root
+    );
+
+    this.squareCountX = this.gameRenderer.getCanvasInfo().width / gameData.settings.squareSize;
+    this.squareCountY = this.gameRenderer.getCanvasInfo().height / gameData.settings.squareSize;
 
     this.currentPiece = getRandomElement(gameData.piecesTemplates);
     this.nextPiece = getRandomElement(gameData.piecesTemplates);
 
     this.board = generateMatrix(this.squareCountX, this.squareCountY);
+
+    this.renderNextPiece();
+
+    gameData.highScore = window.localStorage.getItem("highscore") || 0;
+
+    this.updateScores();
   }
 
   handleRotationMovement() {
@@ -57,12 +71,34 @@ export default class Tetris extends Game {
   }
 
   clearCompleteRows() {
+    let completedRows = 0;
+
     for (let y = 0; y < this.board.length; y++) {
       if (this.board[y].every((x) => x !== 0)) {
+        completedRows++;
         this.board.splice(y, 1);
         this.board.unshift(Array(this.squareCountX).fill(0));
       }
     }
+
+    if (completedRows >= 4) {
+      gameData.previousTetris = true;
+      gameData.playerScore += gameData.previousTetris
+        ? gameData.scores.doubleTetris
+        : gameData.scores.tetris;
+      gameData.tetrisCount++;
+    } else {
+      gameData.previousTetris = false;
+      gameData.playerScore += completedRows * gameData.scores.single;
+    }
+
+    this.updateScores();
+  }
+
+  updateScores() {
+    document.getElementById("score").innerText = `Score: ${gameData.playerScore}`;
+    document.getElementById("tetris").innerText = `Tetris: ${gameData.tetrisCount}`;
+    document.getElementById("highscore").innerText = `Highscore: ${gameData.highScore}`;
   }
 
   update() {
@@ -86,8 +122,12 @@ export default class Tetris extends Game {
 
       this.clearCompleteRows();
 
+      this.renderNextPiece();
+
       if (this.checkGameOver()) {
         gameData.gameOver = true;
+        gameData.highScore = gameData.playerScore;
+        window.localStorage.setItem("highscore", gameData.playerScore);
       }
     }
   }
@@ -95,11 +135,11 @@ export default class Tetris extends Game {
   renderBackground() {
     for (let x = 0; x < this.squareCountX; x++) {
       const color = x % 2 === 0 ? gameData.settings.lineColor : gameData.settings.backgroundColor;
-      this.canvasRenderer.drawRect(
+      this.gameRenderer.drawRect(
         gameData.settings.squareSize * x - gameData.settings.lineThickness,
         0,
         gameData.settings.squareSize,
-        this.canvasRenderer.getCanvasInfo().height,
+        this.gameRenderer.getCanvasInfo().height,
         color
       );
     }
@@ -111,7 +151,7 @@ export default class Tetris extends Game {
 
       for (let x = 0; x < row.length; x++) {
         if (this.board[y][x] === 0) continue;
-        this.canvasRenderer.drawRect(
+        this.gameRenderer.drawRect(
           x * gameData.settings.squareSize,
           y * gameData.settings.squareSize,
           gameData.settings.squareSize - gameData.settings.lineThickness,
@@ -126,7 +166,7 @@ export default class Tetris extends Game {
     for (let y = 0; y < this.currentPiece.template.length; y++) {
       for (let x = 0; x < this.currentPiece.template[y].length; x++) {
         if (this.currentPiece.template[y][x] === 0) continue;
-        this.canvasRenderer.drawRect(
+        this.gameRenderer.drawRect(
           (this.currentPiece.x + x) * gameData.settings.squareSize,
           (this.currentPiece.y + y) * gameData.settings.squareSize,
           gameData.settings.squareSize - gameData.settings.lineThickness,
@@ -137,12 +177,32 @@ export default class Tetris extends Game {
     }
   }
 
+  renderNextPiece() {
+    this.pieceRenderer.resize({
+      width: this.nextPiece.template[0].length * gameData.settings.squareSize,
+      height: gameData.settings.squareSize * 2,
+    });
+
+    for (let y = 0; y < this.nextPiece.template.length; y++) {
+      for (let x = 0; x < this.nextPiece.template[y].length; x++) {
+        if (this.nextPiece.template[y][x] === 0) continue;
+        this.pieceRenderer.drawRect(
+          x * gameData.settings.squareSize,
+          y * gameData.settings.squareSize,
+          gameData.settings.squareSize - gameData.settings.lineThickness,
+          gameData.settings.squareSize - gameData.settings.lineThickness,
+          this.nextPiece.color
+        );
+      }
+    }
+  }
+
   renderGameOver() {
-    this.canvasRenderer.setBackgroundColor("red");
+    this.gameRenderer.setBackgroundColor("red");
   }
 
   render() {
-    this.canvasRenderer.clear();
+    this.gameRenderer.clear();
     if (gameData.gameOver) {
       this.renderGameOver();
       return;

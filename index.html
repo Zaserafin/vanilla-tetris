@@ -7,8 +7,18 @@
     <title>%VITE_APP_TITLE%</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <aside class="side-board">
+        <h1 class="title">%VITE_APP_TITLE%</h1>
+        <canvas id="piece-canvas" class="piece-canvas"></canvas>
+        <div class="board-info">
+          <span class="score" id="score">Score: 1</span>
+          <span class="tetris" id="tetris">Tetris: 5</span>
+          <span class="highscore" id="highscore">Highscore: 100</span>
+        </div>
+      </aside>
+      <canvas id="game-canvas" class="game-canvas"></canvas>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
-
