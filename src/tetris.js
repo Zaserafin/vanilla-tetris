@@ -27,7 +27,9 @@ export default class Tetris extends Game {
     this.currentPiece = getRandomElement(gameData.piecesTemplates);
     this.nextPiece = getRandomElement(gameData.piecesTemplates);
 
-    this.board = generateMatrix(this.squareCountX, this.squareCountY);
+    this.board = generateMatrix(this.squareCountX, this.squareCountY + 4);
+
+    console.log(this.board);
 
     this.renderNextPiece();
 
@@ -134,13 +136,22 @@ export default class Tetris extends Game {
 
   renderBackground() {
     for (let x = 0; x < this.squareCountX; x++) {
-      const color = x % 2 === 0 ? gameData.settings.lineColor : gameData.settings.backgroundColor;
       this.gameRenderer.drawRect(
         gameData.settings.squareSize * x - gameData.settings.lineThickness,
         0,
-        gameData.settings.squareSize,
+        gameData.settings.lineThickness,
         this.gameRenderer.getCanvasInfo().height,
-        color
+        gameData.settings.lineColor
+      );
+    }
+
+    for (let y = 0; y < this.squareCountY; y++) {
+      this.gameRenderer.drawRect(
+        0,
+        gameData.settings.squareSize * y - gameData.settings.lineThickness,
+        this.gameRenderer.getCanvasInfo().width,
+        gameData.settings.lineThickness,
+        gameData.settings.lineColor
       );
     }
   }

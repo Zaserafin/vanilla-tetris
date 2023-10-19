@@ -14,15 +14,15 @@ const gameData = {
     mainCanvasId: "game-canvas",
     pieceCanvasId: "piece-canvas",
     soundEnabled: true,
-    squareSize: 40,
+    squareSize: 30,
     backgroundColor: "#4f4f4f",
     lineColor: "#ffffff09",
     lineThickness: 2,
     solidColor: "lightcoral",
     tickRate: 4,
-    frameRate: 12,
+    frameRate: 4,
     canvasHeight: 600,
-    canvasWidth: 400,
+    canvasWidth: 300,
   },
   piecesTemplates: [
     {
