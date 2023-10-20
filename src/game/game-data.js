@@ -20,7 +20,7 @@ const gameData = {
     lineThickness: 2,
     solidColor: "lightcoral",
     tickRate: 4,
-    frameRate: 4,
+    frameRate: 30,
     canvasHeight: 600,
     canvasWidth: 300,
   },
