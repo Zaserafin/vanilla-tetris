@@ -1,14 +1,18 @@
 {
   "name": "vanilla-tetris",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "homepage": "https://zaserafin.github.io/vanilla-tetris/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy" : "npm run build",
+    "deploy" : "gh-pages -d dist"
   },
   "devDependencies": {
+    "gh-pages": "^6.0.0",
     "vite": "^4.4.5"
   }
 }
