@@ -5,37 +5,37 @@ export default class Tetris extends Game {
   constructor() {
     super(gameData.settings.tickRate, gameData.settings.frameRate);
 
+    this.gameCanvas = document.getElementById(gameData.settings.mainCanvasId);
+    this.pieceCanvas = document.getElementById(gameData.settings.pieceCanvasId);
+
     this.gameRenderer = new CanvasRenderer(
-      gameData.settings.mainCanvasId,
+      this.gameCanvas,
       gameData.settings.canvasWidth,
       gameData.settings.canvasHeight,
       gameData.settings.backgroundColor,
       root
     );
 
-    this.pieceRenderer = new CanvasRenderer(
-      gameData.settings.pieceCanvasId,
-      0,
-      0,
-      "transparent",
-      root
-    );
+    this.pieceRenderer = new CanvasRenderer(this.pieceCanvas, 0, 0, "transparent", root);
 
     this.squareCountX = this.gameRenderer.getCanvasInfo().width / gameData.settings.squareSize;
     this.squareCountY = this.gameRenderer.getCanvasInfo().height / gameData.settings.squareSize;
 
-    this.currentPiece = getRandomElement(gameData.piecesTemplates);
-    this.nextPiece = getRandomElement(gameData.piecesTemplates);
-
-    this.board = generateMatrix(this.squareCountX, this.squareCountY + 4);
-
-    console.log(this.board);
-
-    this.renderNextPiece();
+    this.board = generateMatrix(
+      this.squareCountX,
+      this.squareCountY + gameData.settings.boardOffset
+    );
 
     gameData.highScore = window.localStorage.getItem("highscore") || 0;
-
     this.updateScores();
+  }
+
+  start() {
+    this.currentPiece = getRandomElement(gameData.piecesTemplates);
+    this.nextPiece = getRandomElement(gameData.piecesTemplates);
+    this.renderNextPiece();
+
+    super.start();
   }
 
   handleRotationMovement() {

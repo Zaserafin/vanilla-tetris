@@ -23,6 +23,7 @@ const gameData = {
     frameRate: 30,
     canvasHeight: 600,
     canvasWidth: 300,
+    boardOffset: 4,
   },
   piecesTemplates: [
     {

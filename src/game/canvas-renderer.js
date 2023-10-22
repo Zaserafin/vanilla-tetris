@@ -1,16 +1,19 @@
 export default class CanvasRenderer {
   /**
    * Crea un lienzo y lo agrega a un elemento HTML específico (o al cuerpo del documento por defecto).
+   * @param {HTMLElement} canvas - Elemento que corresponde al lienzo dodne se renderizara.
    * @param {number} width - Ancho del lienzo.
    * @param {number} height - Alto del lienzo.
    * @param {string} [backgroundColor = 'white'] - Color de fondo del lienzo (opcional).
-   * @param {HTMLElement} [parentElement] - Elemento HTML al que se agregará el lienzo (opcional).
    */
-  constructor(id, width, height, backgroundColor = "white") {
-    this.canvas = document.getElementById(id);
-    this.canvas.width = width;
-    this.canvas.height = height;
+  constructor(canvas, width, height, backgroundColor = "white") {
+    if (!canvas) {
+      throw new Error("Cannot initialize renderer without a proper canvas");
+    }
+
+    this.canvas = canvas;
     this.context = this.canvas.getContext("2d");
+    this.resize({ width: width, height: height });
     this.setBackgroundColor(backgroundColor);
   }
 
@@ -30,20 +33,6 @@ export default class CanvasRenderer {
   }
 
   /**
-   * Restaura el estado del contexto del lienzo al predeterminado.
-   */
-  restoreContextState() {
-    this.context.restore();
-  }
-
-  /**
-   * Guarda el estado actual del contexto del lienzo.
-   */
-  saveContextState() {
-    this.context.save();
-  }
-
-  /**
    * Dibuja un cuadrado en el lienzo.
    * @param {number} x - Coordenada X del cuadrado.
    * @param {number} y - Coordenada Y del cuadrado.
@@ -54,38 +43,6 @@ export default class CanvasRenderer {
   drawRect(x, y, width, height, color) {
     this.context.fillStyle = color;
     this.context.fillRect(x, y, width, height);
-  }
-
-  /**
-   * Dibuja una línea en el lienzo.
-   * @param {number} x1 - Coordenada X del punto de inicio de la línea.
-   * @param {number} y1 - Coordenada Y del punto de inicio de la línea.
-   * @param {number} x2 - Coordenada X del punto final de la línea.
-   * @param {number} y2 - Coordenada Y del punto final de la línea.
-   * @param {string} color - Color de la línea.
-   * @param {number} [lineWidth=1] - Grosor de la línea (opcional).
-   */
-  drawLine(x1, y1, x2, y2, color, lineWidth = 1) {
-    this.context.strokeStyle = color;
-    this.context.lineWidth = lineWidth;
-    this.context.beginPath();
-    this.context.moveTo(x1, y1);
-    this.context.lineTo(x2, y2);
-    this.context.stroke();
-  }
-
-  /**
-   * Dibuja un círculo en el lienzo.
-   * @param {number} x - Coordenada X del centro del círculo.
-   * @param {number} y - Coordenada Y del centro del círculo.
-   * @param {number} radius - Radio del círculo.
-   * @param {string} color - Color del círculo.
-   */
-  drawCircle(x, y, radius, color) {
-    this.context.fillStyle = color;
-    this.context.beginPath();
-    this.context.arc(x, y, radius, 0, Math.PI * 2);
-    this.context.fill();
   }
 
   /**
@@ -123,7 +80,6 @@ export default class CanvasRenderer {
       width: this.canvas.width,
       height: this.canvas.height,
       backgroundColor: this.canvas.style.backgroundColor,
-      // Agregar más propiedades según sea necesario
     };
   }
 
@@ -135,13 +91,5 @@ export default class CanvasRenderer {
   resize({ width = null, height = null }) {
     if (width) this.canvas.width = width;
     if (height) this.canvas.height = height;
-  }
-
-  /**
-   * Obtiene el contexto 2D del lienzo.
-   * @returns {CanvasRenderingContext2D} - Contexto 2D del lienzo.
-   */
-  getContext() {
-    return this.context;
   }
 }
