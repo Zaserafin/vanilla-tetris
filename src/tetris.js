@@ -1,6 +1,6 @@
 import { Game, gameData, CanvasRenderer } from "./game";
 import { checkCollisions, generateMatrix, getRandomElement, getTruncedVector } from "./utils";
-import { settings, pieces, scores } from "./game/data";
+import { settings, pieces, scores, colors } from "./game/data";
 
 export default class Tetris extends Game {
   constructor() {
@@ -8,23 +8,25 @@ export default class Tetris extends Game {
 
     this.gameCanvas = document.getElementById(settings.mainCanvasId);
     this.pieceCanvas = document.getElementById(settings.pieceCanvasId);
+    this.scoreElement = document.getElementById(settings.scoreElementId);
+    this.tetrisElement = document.getElementById(settings.tetrisElementId);
+    this.highScoreElement = document.getElementById(settings.highScoreElementId);
 
     this.gameRenderer = new CanvasRenderer(
       this.gameCanvas,
       settings.canvasWidth,
       settings.canvasHeight,
-      settings.backgroundColor,
-      root
+      colors.darkGrey
     );
 
-    this.pieceRenderer = new CanvasRenderer(this.pieceCanvas, 0, 0, "transparent", root);
+    this.pieceRenderer = new CanvasRenderer(this.pieceCanvas, 0, 0, colors.transparent);
 
     this.squareCountX = this.gameRenderer.getCanvasInfo().width / settings.squareSize;
     this.squareCountY = this.gameRenderer.getCanvasInfo().height / settings.squareSize;
 
     this.board = generateMatrix(this.squareCountX, this.squareCountY + settings.boardOffset);
 
-    gameData.highScore = window.localStorage.getItem("highscore") || 0;
+    gameData.highScore = window.localStorage.getItem(settings.highScoreElementId) || 0;
     this.updateScores();
   }
 
@@ -32,7 +34,6 @@ export default class Tetris extends Game {
     this.currentPiece = getRandomElement(pieces);
     this.nextPiece = getRandomElement(pieces);
     this.renderNextPiece();
-
     super.start();
   }
 
@@ -45,7 +46,14 @@ export default class Tetris extends Game {
         this.squareCountY,
         "left"
       ) &&
-      checkCollisions(this.board, this.currentPiece, this.squareCountX, this.squareCountY, "right")
+      checkCollisions(
+        this.board,
+        this.currentPiece,
+        this.squareCountX,
+        this.squareCountY,
+        "right"
+      ) &&
+      checkCollisions(this.board, this.currentPiece, this.squareCountX, this.squareCountY, "down")
     )
       this.currentPiece.template = this.currentPiece.template[0].map((val, index) =>
         this.currentPiece.template.map((row) => row[index]).reverse()
@@ -94,9 +102,9 @@ export default class Tetris extends Game {
   }
 
   updateScores() {
-    document.getElementById("score").innerText = `Score: ${gameData.playerScore}`;
-    document.getElementById("tetris").innerText = `Tetris: ${gameData.tetrisCount}`;
-    document.getElementById("highscore").innerText = `Highscore: ${gameData.highScore}`;
+    this.scoreElement.innerText = `Score: ${gameData.playerScore}`;
+    this.tetrisElement.innerText = `Tetris: ${gameData.tetrisCount}`;
+    this.highScoreElement.innerText = `Highscore: ${gameData.highScore}`;
   }
 
   update() {
@@ -124,8 +132,10 @@ export default class Tetris extends Game {
 
       if (this.checkGameOver()) {
         gameData.gameOver = true;
-        gameData.highScore = gameData.playerScore;
-        window.localStorage.setItem("highscore", gameData.playerScore);
+        if (gameData.playerScore > gameData.highScore) {
+          gameData.highScore = gameData.playerScore;
+          window.localStorage.setItem("highscore", gameData.highScore);
+        }
       }
     }
   }
@@ -137,7 +147,7 @@ export default class Tetris extends Game {
         0,
         settings.lineThickness,
         this.gameRenderer.getCanvasInfo().height,
-        settings.lineColor
+        colors.lineColor
       );
     }
 
@@ -147,7 +157,7 @@ export default class Tetris extends Game {
         settings.squareSize * y - settings.lineThickness,
         this.gameRenderer.getCanvasInfo().width,
         settings.lineThickness,
-        settings.lineColor
+        colors.lineColor
       );
     }
   }
@@ -163,7 +173,7 @@ export default class Tetris extends Game {
           y * settings.squareSize,
           settings.squareSize - settings.lineThickness,
           settings.squareSize - settings.lineThickness,
-          settings.solidColor
+          colors.solidColor
         );
       }
     }
@@ -205,7 +215,7 @@ export default class Tetris extends Game {
   }
 
   renderGameOver() {
-    this.gameRenderer.setBackgroundColor("red");
+    this.gameRenderer.setBackgroundColor(colors.solidColor);
   }
 
   render() {

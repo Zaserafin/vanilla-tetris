@@ -1,6 +1,9 @@
 const settings = {
   mainCanvasId: "game-canvas",
   pieceCanvasId: "piece-canvas",
+  scoreElementId: "score",
+  tetrisElementId: "tetris",
+  highScoreElementId: "highscore",
   soundEnabled: true,
   squareSize: 30,
   backgroundColor: "#4f4f4f",
