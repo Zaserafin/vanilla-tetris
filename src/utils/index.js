@@ -1,5 +1,5 @@
 export function getRandomElement(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
+  return Object.create(arr[Math.floor(Math.random() * arr.length)]);
 }
 
 export function drawRect(ctx, x, y, width, height, color = "white") {
