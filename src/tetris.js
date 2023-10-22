@@ -1,38 +1,36 @@
 import { Game, gameData, CanvasRenderer } from "./game";
 import { checkCollisions, generateMatrix, getRandomElement, getTruncedVector } from "./utils";
+import { settings, pieces, scores } from "./game/data";
 
 export default class Tetris extends Game {
   constructor() {
-    super(gameData.settings.tickRate, gameData.settings.frameRate);
+    super(settings.tickRate, settings.frameRate);
 
-    this.gameCanvas = document.getElementById(gameData.settings.mainCanvasId);
-    this.pieceCanvas = document.getElementById(gameData.settings.pieceCanvasId);
+    this.gameCanvas = document.getElementById(settings.mainCanvasId);
+    this.pieceCanvas = document.getElementById(settings.pieceCanvasId);
 
     this.gameRenderer = new CanvasRenderer(
       this.gameCanvas,
-      gameData.settings.canvasWidth,
-      gameData.settings.canvasHeight,
-      gameData.settings.backgroundColor,
+      settings.canvasWidth,
+      settings.canvasHeight,
+      settings.backgroundColor,
       root
     );
 
     this.pieceRenderer = new CanvasRenderer(this.pieceCanvas, 0, 0, "transparent", root);
 
-    this.squareCountX = this.gameRenderer.getCanvasInfo().width / gameData.settings.squareSize;
-    this.squareCountY = this.gameRenderer.getCanvasInfo().height / gameData.settings.squareSize;
+    this.squareCountX = this.gameRenderer.getCanvasInfo().width / settings.squareSize;
+    this.squareCountY = this.gameRenderer.getCanvasInfo().height / settings.squareSize;
 
-    this.board = generateMatrix(
-      this.squareCountX,
-      this.squareCountY + gameData.settings.boardOffset
-    );
+    this.board = generateMatrix(this.squareCountX, this.squareCountY + settings.boardOffset);
 
     gameData.highScore = window.localStorage.getItem("highscore") || 0;
     this.updateScores();
   }
 
   start() {
-    this.currentPiece = getRandomElement(gameData.piecesTemplates);
-    this.nextPiece = getRandomElement(gameData.piecesTemplates);
+    this.currentPiece = getRandomElement(pieces);
+    this.nextPiece = getRandomElement(pieces);
     this.renderNextPiece();
 
     super.start();
@@ -85,13 +83,11 @@ export default class Tetris extends Game {
 
     if (completedRows >= 4) {
       gameData.previousTetris = true;
-      gameData.playerScore += gameData.previousTetris
-        ? gameData.scores.doubleTetris
-        : gameData.scores.tetris;
+      gameData.playerScore += gameData.previousTetris ? scores.doubleTetris : scores.tetris;
       gameData.tetrisCount++;
     } else {
       gameData.previousTetris = false;
-      gameData.playerScore += completedRows * gameData.scores.single;
+      gameData.playerScore += completedRows * scores.single;
     }
 
     this.updateScores();
@@ -120,7 +116,7 @@ export default class Tetris extends Game {
       this.currentPiece.y = 0;
       this.currentPiece.x = Math.trunc(this.squareCountX / 2);
       this.currentPiece = this.nextPiece;
-      this.nextPiece = getRandomElement(gameData.piecesTemplates);
+      this.nextPiece = getRandomElement(pieces);
 
       this.clearCompleteRows();
 
@@ -137,21 +133,21 @@ export default class Tetris extends Game {
   renderBackground() {
     for (let x = 0; x < this.squareCountX; x++) {
       this.gameRenderer.drawRect(
-        gameData.settings.squareSize * x - gameData.settings.lineThickness,
+        settings.squareSize * x - settings.lineThickness,
         0,
-        gameData.settings.lineThickness,
+        settings.lineThickness,
         this.gameRenderer.getCanvasInfo().height,
-        gameData.settings.lineColor
+        settings.lineColor
       );
     }
 
     for (let y = 0; y < this.squareCountY; y++) {
       this.gameRenderer.drawRect(
         0,
-        gameData.settings.squareSize * y - gameData.settings.lineThickness,
+        settings.squareSize * y - settings.lineThickness,
         this.gameRenderer.getCanvasInfo().width,
-        gameData.settings.lineThickness,
-        gameData.settings.lineColor
+        settings.lineThickness,
+        settings.lineColor
       );
     }
   }
@@ -163,11 +159,11 @@ export default class Tetris extends Game {
       for (let x = 0; x < row.length; x++) {
         if (this.board[y][x] === 0) continue;
         this.gameRenderer.drawRect(
-          x * gameData.settings.squareSize,
-          y * gameData.settings.squareSize,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
-          gameData.settings.solidColor
+          x * settings.squareSize,
+          y * settings.squareSize,
+          settings.squareSize - settings.lineThickness,
+          settings.squareSize - settings.lineThickness,
+          settings.solidColor
         );
       }
     }
@@ -178,10 +174,10 @@ export default class Tetris extends Game {
       for (let x = 0; x < this.currentPiece.template[y].length; x++) {
         if (this.currentPiece.template[y][x] === 0) continue;
         this.gameRenderer.drawRect(
-          (this.currentPiece.x + x) * gameData.settings.squareSize,
-          (this.currentPiece.y + y) * gameData.settings.squareSize,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
+          (this.currentPiece.x + x) * settings.squareSize,
+          (this.currentPiece.y + y) * settings.squareSize,
+          settings.squareSize - settings.lineThickness,
+          settings.squareSize - settings.lineThickness,
           this.currentPiece.color
         );
       }
@@ -190,18 +186,18 @@ export default class Tetris extends Game {
 
   renderNextPiece() {
     this.pieceRenderer.resize({
-      width: this.nextPiece.template[0].length * gameData.settings.squareSize,
-      height: gameData.settings.squareSize * 2,
+      width: this.nextPiece.template[0].length * settings.squareSize,
+      height: settings.squareSize * 2,
     });
 
     for (let y = 0; y < this.nextPiece.template.length; y++) {
       for (let x = 0; x < this.nextPiece.template[y].length; x++) {
         if (this.nextPiece.template[y][x] === 0) continue;
         this.pieceRenderer.drawRect(
-          x * gameData.settings.squareSize,
-          y * gameData.settings.squareSize,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
-          gameData.settings.squareSize - gameData.settings.lineThickness,
+          x * settings.squareSize,
+          y * settings.squareSize,
+          settings.squareSize - settings.lineThickness,
+          settings.squareSize - settings.lineThickness,
           this.nextPiece.color
         );
       }
