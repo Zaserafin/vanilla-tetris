@@ -30,11 +30,21 @@ export default class Tetris extends Game {
     this.updateScores();
   }
 
+  resetVars() {
+    this.board = generateMatrix(this.squareCountX, this.squareCountY + settings.boardOffset);
+    this.gameRenderer.setBackgroundColor(colors.darkGrey);
+    gameData.highScore = window.localStorage.getItem(settings.highScoreElementId) || 0;
+    gameData.gameOver = false;
+    gameData.playerScore = 0;
+    this.updateScores();
+  }
+
   start() {
     this.gameCanvas.style.pointerEvents = "all";
     this.currentPiece = getRandomElement(pieces);
     this.nextPiece = getRandomElement(pieces);
     this.renderNextPiece();
+    this.resetVars();
     super.start();
   }
 
@@ -133,6 +143,9 @@ export default class Tetris extends Game {
 
       if (this.checkGameOver()) {
         gameData.gameOver = true;
+        const btn = document.getElementById("start-button");
+        btn.innerText = "Reiniciar";
+        btn.style.display = 'inline-block';
         if (gameData.playerScore > gameData.highScore) {
           gameData.highScore = gameData.playerScore;
           window.localStorage.setItem("highscore", gameData.highScore);
