@@ -31,6 +31,7 @@ export default class Tetris extends Game {
   }
 
   start() {
+    this.gameCanvas.style.pointerEvents = "all";
     this.currentPiece = getRandomElement(pieces);
     this.nextPiece = getRandomElement(pieces);
     this.renderNextPiece();

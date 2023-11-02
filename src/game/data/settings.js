@@ -1,4 +1,5 @@
 const settings = {
+  fullscreentBbuttonId: "fullscreen-button",
   mainCanvasId: "game-canvas",
   pieceCanvasId: "piece-canvas",
   scoreElementId: "score",
